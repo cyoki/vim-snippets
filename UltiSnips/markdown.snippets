@@ -55,28 +55,28 @@ endglobal
 ###########################
 # Sections and Paragraphs #
 ###########################
-snippet sec "Section" b
-# ${1:Section Name} #
+snippet h1 "heading level 1" b
+# ${1:heading 1}
 $0
 endsnippet
 
-snippet ssec "Sub Section" b
-## ${1:Section Name} ##
+snippet h2 "heading level 2" b
+## ${1:heading 2}
 $0
 endsnippet
 
-snippet sssec "SubSub Section" b
-### ${1:Section Name} ###
+snippet h3 "heading level 3" b
+### ${1:heading 3}
 $0
 endsnippet
 
-snippet par "Paragraph" b
-#### ${1:Paragraph Name} ####
+snippet h4 "heading level 4" b
+#### ${1:heading 4}
 $0
 endsnippet
 
-snippet spar "Paragraph" b
-##### ${1:Paragraph Name} #####
+snippet h5 "heading level 5" b
+##### ${1:heading 5}
 $0
 endsnippet
 
@@ -85,64 +85,125 @@ endsnippet
 ###################
 
 snippet * "italics"
-*${1:${VISUAL}}*$0
+*${1:italics}*$0
 endsnippet
 
 snippet ** "bold"
-**${1:${VISUAL}}**$0
+**${1:bold}**$0
+endsnippet
+
+snippet __ "bold"
+__${1:bold}__$0
+endsnippet
+
+snippet ~~ "strike"
+~~${1:strike}~~$0
 endsnippet
 
 snippet *** "bold italics"
-***${1:${VISUAL}}***$0
+***${1:bold italics}***$0
 endsnippet
 
-snippet /* "Comment"
-<!-- ${1:${VISUAL}} -->$0
+snippet -- "comment"
+<!-- ${1:comment}} -->$0
+endsnippet
+
+###########
+#  Links  #
+###########
+
+snippet lk "link to somewhere"
+[${1:link}](${2:url})$0
+endsnippet
+
+snippet rlk "reference link to somewhere"
+[${1:link}][${2:id}]$0
+
+[$2]: ${3:url}
+endsnippet
+
+snippet lkt "link to somewhere with title"
+[${1:link}](${2:url} "${3:title}")$0
+endsnippet
+
+snippet rlkt "reference link to somewhere with title"
+[${1:link}][${2:id}]$0
+
+[$2]: ${3:url} "${4:title}"
+endsnippet
+
+############
+#  Images  #
+############
+
+snippet im "image to somewhere"
+![${1:text}](${2:url})$0
+endsnippet
+
+snippet rim "reference img to somewhere"
+![${1:text}][${2:id}]$0
+
+[$2]: ${3:url}
+endsnippet
+
+snippet imt "link to somewhere with title"
+![${1:text}](${2:url} "${3:title}")$0
+endsnippet
+
+snippet rimt "reference link to somewhere with title"
+![${1:text}][${2:id}]$0
+
+[$2]: ${3:url} "${4:title}"
+endsnippet
+
+snippet fnt "footnote"
+[^${1:footnote}]$0
+
+[^$1]: ${2:text}
 endsnippet
 
 ################
-# Common stuff #
+#  CodeBlocks  #
 ################
-snippet link "Link to something"
-[${1:${VISUAL:Text}}](${3:https://${2:www.url.com}})$0
+
+snippet ` "inline code" w
+\`${1:inline code}\`$0
 endsnippet
 
-snippet img "Image"
-![${1:pic alt}](${2:path}${3/.+/ "/}${3:opt title}${3/.+/"/})$0
-endsnippet
-
-snippet ilc "Inline Code" i
-\`${1:${VISUAL}}\`$0
-endsnippet
-
-snippet cbl "Codeblock" b
+snippet ``` "codeblock" b
 \`\`\`$1
-${2:${VISUAL}}
+${2:codeblock}
 \`\`\`
 $0
 endsnippet
 
-snippet refl "Reference Link"
-[${1:${VISUAL:Text}}][${2:id}]$0
-
-[$2]:${4:https://${3:www.url.com}} "${5:$4}"
-endsnippet
-
-snippet fnt "Footnote"
-[^${1:${VISUAL:Footnote}}]$0
-
-[^$1]:${2:Text}
-endsnippet
-
-snippet detail "Disclosure"
-<details${3: open=""}>
-  ${1:<summary>${2}</summary>}$0
-</details>
-endsnippet
+############
+#  Tables  #
+############
 
 post_jump "create_table(snip)"
-snippet "tb([1-9][1-9])" "Fancy table" br
+snippet "tb([1-9][1-9])" "table with m*n" br
 `!p snip.rv = match.group(1)`
+endsnippet
+
+#############
+#  Itemize  #
+#############
+
+snippet oi "ordered items" b
+1. ${1:order}
+endsnippet
+
+snippet ui "unordered items" b
+* ${1:unorder}
+endsnippet
+
+###############
+#  TaskLists  #
+###############
+
+snippet tl "task list" b
+- [${1:x}] ${2:task}
 endsnippet
 
 # vim:ft=snippets:

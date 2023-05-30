@@ -55,7 +55,7 @@ endsnippet
 
 snippet foldp "Insert a vim fold marker pair" b
 `!p snip.rv = get_comment_format()[0]` ${1:Fold description} `!p snip.rv = foldmarker()[0]` `!p snip.rv = get_comment_format()[2]`
-${2:${VISUAL:Content}}
+${2:${VISUAL:content}}
 `!p snip.rv = get_comment_format()[0]` `!p snip.rv = foldmarker()[1]` $1 `!p snip.rv = get_comment_format()[2]`
 endsnippet
 
@@ -79,28 +79,32 @@ endsnippet
 #########
 # DATES #
 #########
-snippet date "YYYY-MM-DD" w
+snippet sdate "MM/DD/YYYY" w
+`!v strftime("%m/%d/%Y")`
+endsnippet
+
+snippet hdate "YYYY-MM-DD" w
 `!v strftime("%Y-%m-%d")`
 endsnippet
 
-snippet ddate "Month DD, YYYY" w
-`!v strftime("%b %d, %Y")`
+snippet fdate "Month DD, YYYY" w
+`!v strftime("%B %d, %Y")`
 endsnippet
 
-snippet diso "ISO format datetime" w
+snippet idate "ISO format datetime" w
 `!v strftime("%Y-%m-%d %H:%M:%S%z")`
+endsnippet
+
+snippet tdate "YYYY-MM-DD hh:mm" w
+`!v strftime("%Y-%m-%d %H:%M")`
 endsnippet
 
 snippet time "hh:mm" w
 `!v strftime("%H:%M")`
 endsnippet
 
-snippet datetime "YYYY-MM-DD hh:mm" w
-`!v strftime("%Y-%m-%d %H:%M")`
-endsnippet
-
 snippet todo "TODO comment" bw
-`!p snip.rv=get_comment_format()[0]` ${2:TODO}: $0${3: <${4:`!v strftime('%d-%m-%y')`}${5:, `!v g:snips_author`}>} `!p snip.rv=get_comment_format()[2]`
+`!p snip.rv=get_comment_format()[0]` ${2:TODO}: $0${3: <${4:`!v strftime('%m/%d/%y %H:%M:%S')`}${5:, `!v g:snips_author`}>} `!p snip.rv=get_comment_format()[2]`
 endsnippet
 
 ##########
@@ -108,6 +112,51 @@ endsnippet
 ##########
 snippet uuid "Random UUID" w
 `!p if not snip.c: import uuid; snip.rv = str(uuid.uuid4())`
+endsnippet
+
+#################
+#  punctuation  #
+#################
+
+snippet " "double quotes pairs" w
+"${1:var}"
+endsnippet
+
+snippet ' "single quotes pairs" w
+'${1:var}'
+endsnippet
+
+snippet """ "triple quotes (double pairs)" w
+"""${1:var}
+"""
+endsnippet
+
+snippet ''' "triple quotes (single pairs)" w
+'''${1:var}
+'''
+endsnippet
+
+snippet ( "parentheses pairs" i
+(${1:var})
+endsnippet
+
+snippet [ "bracket pairs" i
+[${1:var}]
+endsnippet
+
+snippet { "brace paris" i
+{${1:var}}
+endsnippet
+
+##########
+#  http  #
+##########
+snippet http "http url" w
+http://${1:url}
+endsnippet
+
+snippet https "https url" w
+https://${1:url}
 endsnippet
 
 # vim:ft=snippets:

@@ -4,6 +4,12 @@ priority -50
 #                            TEXTMATE SNIPPETS                            #
 ###########################################################################
 
+
+#############
+#  Headers  #
+#############
+
+
 #! header
 snippet #! "#!/usr/bin/env python" b
 #!/usr/bin/env python
@@ -26,20 +32,109 @@ snippet "^# ?[uU][tT][fF]-?8" "# encoding: UTF-8" r
 $0
 endsnippet
 
-snippet ifmain "ifmain" b
-if __name__ == `!p snip.rv = get_quoting_style(snip)`__main__`!p snip.rv = get_quoting_style(snip)`:
-	${1:${VISUAL:main()}}
+##############
+#  Markdown  #
+##############
+
+snippet mc "markdown Cell" b
+# %% [markdown]
+# $0
 endsnippet
 
-snippet with "with" b
-with ${1:expr}`!p snip.rv = " as " if t[2] else ""`${2:var}:
-	${3:${VISUAL:pass}}
+snippet h1 "markdown head 1 cell" b
+# %% [markdown]
+# # $0
+endsnippet
+
+snippet h2 "markdown head 2 cell" b
+# %% [markdown]
+# ## $0
+endsnippet
+
+snippet cc "code cell" b
+# %%
 $0
 endsnippet
 
+###################
+#  Miscellaneous  #
+###################
+
+snippet main "ifmain" b
+if __name__ == `!p snip.rv = get_quoting_style(snip)`__main__`!p snip.rv = get_quoting_style(snip)`:
+	${1:main()}
+endsnippet
+
+snippet with "with" b
+with ${1:expression}`!p snip.rv = " as " if t[2] else ""`${2:variable}:
+	${3:pass}
+$0
+endsnippet
+
+snippet awith "async with" b
+async with ${1:expression}`!p snip.rv = " as " if t[2] else ""`${2:variable}:
+	${3:pass}
+$0
+endsnippet
+
+snippet open "open" b
+open(${1:filename}, mode = "${2:w}", encoding = "${3:ISO-8859-1}")
+endsnippet
+
+snippet get "dict get" w
+${1:dict}.get(${2:key}, ${3:default})
+endsnippet
+
+snippet arg "*args" w
+*args
+endsnippet
+
+snippet kwg "**kwargs" w
+**kwargs
+endsnippet
+
+# doesn't expand when there is a word in front
+snippet /(^|(?<=\W))\./ "self." r
+self.
+endsnippet
+
+snippet sa "self.attr = attr" b
+self.${1:attr} = ${2:value}
+endsnippet
+
+snippet /(^|(?<=\W))\_/ "__magic__" r
+__${1:init}__
+endsnippet
+
+snippet imp "import module" b
+import ${1:module}
+endsnippet
+
+snippet from "from package import module" b
+from ${1:package} import ${2:module}
+endsnippet
+
+snippet ret "return" b
+return ${1:value}
+endsnippet
+
+snippet lam "lambda" b
+${1:function} = lambda ${2:arguments} : ${0:expression}
+endsnippet
+
+##########
+#  Loop  #
+##########
+
 snippet for "for loop" b
 for ${1:item} in ${2:iterable}:
-	${3:${VISUAL:pass}}
+	${3:pass}
+endsnippet
+
+
+snippet wh "while loop" b
+while ${1:condition}:
+	${3:pass}
 endsnippet
 
 ##########
@@ -169,7 +264,7 @@ def format_arg(arg, style):
 	elif style == NORMAL:
 		return ":%s: TODO" % arg
 	elif style == GOOGLE:
-		return "%s (%s): TODO" % (arg, arg.type or "TODO")
+		return "%s (%s): TODO" % (arg, arg.type or "")
 	elif style == JEDI:
 		return ":type %s: TODO" % arg
 	elif style == NUMPY:
@@ -182,7 +277,7 @@ def format_return(style):
 	elif style in (NORMAL, SPHINX, JEDI):
 		return ":returns: TODO"
 	elif style == GOOGLE:
-		return "Returns: TODO"
+		return "Returns:"
 
 
 def write_docstring_args(args, snip):
@@ -252,7 +347,7 @@ def write_init_body(args, parents, snip):
 		snip.rv += '\n' + snip.mkline('', indent='')
 
 	for arg in filter(lambda arg: not arg.is_vararg(), args):
-		snip += "self._%s = %s" % (arg, arg)
+		snip += "self.%s = %s" % (arg, arg)
 
 
 def write_slots_args(args, snip):
@@ -282,6 +377,11 @@ def write_function_docstring(t, snip):
 		snip += 'Returns'
 		snip += '-------'
 		snip += 'TODO'
+	elif style == GOOGLE:
+		snip += format_return(style)
+		snip.shift()
+		snip += 'TODO'
+		snip.unshift()
 	else:
 		snip += format_return(style)
 	snip.rv += '\n' + snip.mkline('', indent='')
@@ -296,13 +396,15 @@ endglobal
 # Class & Special Method Name Snippets #
 ########################################
 
-snippet class "class with docstrings" b
+snippet cls "class with docstrings" b
 class ${1:MyClass}(${2:object}):
 
-	`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1. }`!p snip.rv = triple_quotes(snip)`
+	`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1}
+	`!p snip.rv = triple_quotes(snip)`
 
 	def __init__(self$4):
-		`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined.}`!p
+		`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined}
+		`!p
 snip.rv = ""
 snip >> 2
 
@@ -319,10 +421,11 @@ write_init_body(args, t[2], snip)
 endsnippet
 
 
-snippet slotclass "class with slots and docstrings" b
+snippet clss "class with slots and docstrings" b
 class ${1:MyClass}(${2:object}):
 
-	`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1. }`!p snip.rv = triple_quotes(snip)`
+	`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1}
+	`!p snip.rv = triple_quotes(snip)`
 `!p
 snip >> 1
 args = get_args(t[4])
@@ -330,7 +433,8 @@ write_slots_args(args, snip)
 `
 
 	def __init__(self$4):
-		`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined.}`!p
+		`!p snip.rv = triple_quotes(snip)`${5:TODO: to be defined}
+		`!p
 snip.rv = ""
 snip >> 2
 
@@ -347,10 +451,11 @@ write_init_body(args, t[2], snip)
 endsnippet
 
 
-snippet dcl "dataclass" b
+snippet clsd "dataclass with docstrings" b
 @dataclass
 class ${1:MyClass}:
-	`!p snip.rv = triple_quotes(snip)`${2:Docstring for $1. }`!p snip.rv = triple_quotes(snip)`
+	`!p snip.rv = triple_quotes(snip)`${2:Docstring for $1}
+	`!p snip.rv = triple_quotes(snip)`
 	${3:var_1}: ${4:int}
 	${5:var_2}: ${6:float} = ${7:0}
 
@@ -445,10 +550,10 @@ def __repr__(self):
 	${1:pass}
 
 def __str__(self):
-	${2:pass}
+	${2:return self.__repr__}
 
 def __unicode__(self):
-	${3:pass}
+	${3:return self.__repr__}
 endsnippet
 
 
@@ -540,10 +645,22 @@ def __coerce__(self, other):
 	${25:pass}
 endsnippet
 
-snippet deff "function or class method"
-def ${1:fname}(`!p snip.rv = "self, " if snip.indent else ""`$2):
+###############
+#  EnumClass  #
+###############
+
+snippet enum "class Enum"
+class ${1:EnumClass}(Enum):
+
+	`!p snip.rv = triple_quotes(snip)`${3:Docstring for $1}
+	`!p snip.rv = triple_quotes(snip)`
+
 	$0
 endsnippet
+
+##############
+#  Function  #
+##############
 
 snippet def "function with docstrings" b
 def ${1:function}(`!p
@@ -551,7 +668,7 @@ if snip.indent:
 	snip.rv = 'self' + (", " if len(t[2]) else "")`${2:arg1}):
 	`!p snip.rv = triple_quotes(snip)`${4:TODO: Docstring for $1.}`!p
 write_function_docstring(t, snip) `
-	${5:${VISUAL:pass}}
+	${5:pass}
 endsnippet
 
 
@@ -562,7 +679,7 @@ if snip.indent:
 	snip.rv = 'cls' + (", " if len(t[2]) else "")`${2:arg1}):
 	`!p snip.rv = triple_quotes(snip)`${4:TODO: Docstring for $1.}`!p
 write_function_docstring(t, snip) `
-	${5:${VISUAL:pass}}
+	${5:pass}
 endsnippet
 
 
@@ -571,30 +688,25 @@ snippet defs "static method with docstrings" b
 def ${1:function}(${2:arg1}):
 	`!p snip.rv = triple_quotes(snip)`${4:TODO: Docstring for $1.}`!p
 write_function_docstring(t, snip) `
-	${5:${VISUAL:pass}}
+	${5:pass}
 endsnippet
-
-
-# doesn't expand when there is a word in front
-snippet /(^|(?<=\W))\./ "self." r
-self.
-endsnippet
-
-snippet from "from module import name" b
-from ${1:module} import ${2:Stuff}
-endsnippet
-
 
 ##############
 # PROPERTIES #
 ##############
-snippet roprop "Read Only Property" b
+snippet rop "(getter) read only property" b
 @property
 def ${1:name}(self):
-	${2:return self._$1}$0
+	return self._$1
 endsnippet
 
-snippet rwprop "Read write property" b
+snippet wop "(setter) write only property" b
+@$1.setter
+def ${1:name}(self, ${2:value}):
+	self._$1 = $2
+endsnippet
+
+snippet rwp "read write property" b
 def ${1:name}():
 	`!p snip.rv = triple_quotes(snip) if t[2] else ''
 `${2:TODO: Docstring for $1.}`!p
@@ -622,28 +734,38 @@ endsnippet
 ############################
 # If / Else / Elif / Match #
 ############################
-snippet if "If" b
+snippet if "if" b
 if ${1:condition}:
-	${2:${VISUAL:pass}}
+	${2:pass}
 endsnippet
 
-snippet ife "If / Else" b
+snippet ei "elif" b
+elif ${1:condition}:
+	${2:pass}
+endsnippet
+
+snippet el "else" b
+else:
+	${1:pass}
+endsnippet
+
+snippet ife "if / else" b
 if ${1:condition}:
-	${2:${VISUAL:pass}}
+	${2:pass}
 else:
 	${3:pass}
 endsnippet
 
-snippet ifee "If / Elif / Else" b
+snippet ifee "if / elif / else" b
 if ${1:condition}:
-	${2:${VISUAL:pass}}
+	${2:pass}
 elif ${3:condition}:
 	${4:pass}
 else:
 	${5:pass}
 endsnippet
 
-snippet match "Structural pattern matching" b
+snippet match "structural pattern matching" b
 match ${1:expression}:
 	case ${2:pattern_1}:
 		${3:pass}
@@ -651,7 +773,7 @@ match ${1:expression}:
 		${0:pass}
 endsnippet
 
-snippet matchw "Pattern matching with wildcard" b
+snippet matchw "pattern matching with wildcard" b
 match ${1:expression}:
 	case ${2:pattern_1}:
 		${3:pass}
@@ -663,34 +785,34 @@ endsnippet
 ##########################
 # Try / Except / Finally #
 ##########################
-snippet try "Try / Except" b
+snippet try "try / except" b
 try:
-	${1:${VISUAL:pass}}
-except ${2:Exception} as ${3:e}:
+	${1:pass}
+except ${2:exception} as ${3:e}:
 	${4:raise $3}
 endsnippet
 
-snippet trye "Try / Except / Else" b
+snippet trye "try / except / else" b
 try:
-	${1:${VISUAL:pass}}
+	${1:pass}
 except ${2:Exception} as ${3:e}:
 	${4:raise $3}
 else:
 	${5:pass}
 endsnippet
 
-snippet tryf "Try / Except / Finally" b
+snippet tryf "try / except / finally" b
 try:
-	${1:${VISUAL:pass}}
+	${1:pass}
 except ${2:Exception} as ${3:e}:
 	${4:raise $3}
 finally:
 	${5:pass}
 endsnippet
 
-snippet tryef "Try / Except / Else / Finally" b
+snippet tryef "try / except / else / finally" b
 try:
-	${1:${VISUAL:pass}}
+	${1:pass}
 except${2: ${3:Exception} as ${4:e}}:
 	${5:raise}
 else:
@@ -704,32 +826,32 @@ endsnippet
 # Assertions & Tests #
 ######################
 
-snippet ae "Assert equal" b
-self.assertEqual(${1:${VISUAL:first}}, ${2:second})
+snippet ae "assert equal" b
+self.assertEqual(${1:first}, ${2:second})
 endsnippet
 
-snippet at "Assert True" b
-self.assertTrue(${1:${VISUAL:expression}})
+snippet at "assert true" b
+self.assertTrue(${1:expression})
 endsnippet
 
-snippet af "Assert False" b
-self.assertFalse(${1:${VISUAL:expression}})
+snippet af "assert false" b
+self.assertFalse(${1:expression})
 endsnippet
 
-snippet aae "Assert almost equal" b
-self.assertAlmostEqual(${1:${VISUAL:first}}, ${2:second})
+snippet aae "assert almost equal" b
+self.assertAlmostEqual(${1:first}, ${2:second})
 endsnippet
 
-snippet ar "Assert raises" b
-self.assertRaises(${1:exception}, ${2:${VISUAL:func}}${3/.+/, /}${3:arguments})
+snippet ar "assert raises" b
+self.assertRaises(${1:exception}, ${2:func}${3/.+/, /}${3:arguments})
 endsnippet
 
-snippet an "Assert is None" b
-self.assertIsNone(${1:${VISUAL:expression}})
+snippet an "assert is None" b
+self.assertIsNone(${1:expression})
 endsnippet
 
-snippet ann "Assert is not None" b
-self.assertIsNotNone(${1:${VISUAL:expression}})
+snippet ann "assert is not None" b
+self.assertIsNotNone(${1:expression})
 endsnippet
 
 snippet testcase "pyunit testcase" b
@@ -744,39 +866,138 @@ class Test${1:Class}(${2:unittest.TestCase}):
 		${5:pass}
 
 	def test_${6:name}(self):
-		${7:${VISUAL:pass}}
+		${7:pass}
 endsnippet
 
-snippet " "triple quoted string (double quotes)" b
+snippet test "test function/method" b
+def test_${1:name}(self):
+	${2:pass}
+endsnippet
+
+snippet - "return type" i
+-> ${1:None}
+endsnippet
+
+###########
+#  Print  #
+###########
+
+
+snippet pr "print variable" b
+print(${1:variable})
+endsnippet
+
+snippet prs "print string" b
+print("${1:string}")
+endsnippet
+
+snippet prf "print f-string" b
+print(f"${1:f-string}")
+endsnippet
+
+snippet fpr "print variable to file" b
+print(${1:variable}, file=${2:sys.stderr})
+endsnippet
+
+snippet fprs "print string to file" b
+print("${1:string}", file=${2:sys.stderr})
+endsnippet
+
+snippet fprf "print f-string to file" b
+print(f"${1:f-string}", file=${2:sys.stderr})
+endsnippet
+
+####################
+#  Comprehensions  #
+####################
+
+snippet lcp "list comprehension" b
+[${3:expression} for ${1:item} in ${2:iterable}]
+endsnippet
+
+snippet dcp "dict comprehension" b
+{${3:key}: ${4:value} for ${1:item} in ${2:iterable}}
+endsnippet
+
+snippet scp "set comprehension" b
+{${3:expression} for ${1:item} in ${2:iterable}}
+endsnippet
+
+############
+#  Logger  #
+############
+
+snippet log "get logger" b
+logger = logging.getLogger(${1:__name__})
+logger.setLevel(logging.DEBUG)
+endsnippet
+
+snippet loge "log error" b
+logger.error(${1:error})
+endsnippet
+
+snippet logd "log debug" b
+logger.debug(${1:debug})
+endsnippet
+
+snippet logw "log warning" b
+logger.warning(${1:warning})
+endsnippet
+
+snippet logc "log critical" b
+logger.critical(${1:critical})
+endsnippet
+
+snippet logi "log info" b
+logger.info(${1:info})
+endsnippet
+
+##############
+#  Argpaser  #
+##############
+
+snippet argp "argument parser" b
+parser = argparse.ArgumentParser()
+
+parser.add_argument(${1:arguments})
+${2}
+
+args = parser.parse_args()
+endsnippet
+
+snippet arga "add argument" b
+parser.add_argument(${1:arguments})
+endsnippet
+
+#getopt
+snippet getopt "get opt" b
+try:
+	opts, args = getopt.getopt(sys.argv[1:], ${1:"ho:v"}, [${2:"help", "output="}])
+except getopt.GetoptError as err:
+	# print help information and exit:
+	print(err)  # will print something like "option -a not recognized"
+	${3:pass}
+
+verbose = False
+for option, argument in opts:
+	if option == "-v":
+		verbose = True
+	elif option in ("-h", "--help"):
+		${4:pass}
+	elif option in ("-o", "--output"):
+		${5:pass}
+	else:
+		${6:pass}
+endsnippet
+
+# Module Docstring
+snippet docs "file docstring" b
 """
-${1:${VISUAL:doc}}
-`!p triple_quotes_handle_trailing(snip, '"')`
-endsnippet
-
-snippet ' "triple quoted string (single quotes)" b
-'''
-${1:${VISUAL:doc}}
-`!p triple_quotes_handle_trailing(snip, "'")`
-endsnippet
-
-snippet doc "doc block (triple quotes)"
-`!p snip.rv = triple_quotes(snip)`
-${1:${VISUAL:doc}}
-`!p snip.rv = triple_quotes(snip)`
-endsnippet
-
-snippet pmdoc "pocoo style module doc string" b
-# -*- coding: utf-8 -*-
+File: ${1:`vim_snippets#Filename('$1.py', 'foo.py')`}
+Author: `g:snips_author`
+Email: `g:snips_email`
+Github: `g:snips_github`
+Description: ${2}
 """
-	`!p snip.rv = get_dir_and_file_name(snip)`
-	`!p snip.rv = '~' * len(get_dir_and_file_name(snip))`
-
-	${1:DESCRIPTION}
-
-	:copyright: (c) `date +%Y` by ${2:YOUR_NAME}.
-	:license: ${3:LICENSE_NAME}, see LICENSE for more details.
-"""
-$0
 endsnippet
-
 # vim:ft=snippets:
